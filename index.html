@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Canvas Download</title>
+  </head>
+  <body>
+    <h1>Canvas Download</h1>
+    <canvas id="myCanvas" width="16" height="34"></canvas>
+
+    <a id="downloadLink" download="canvas_data.txt" href="#">Download</a>
+    <script>
+      // Step 2: Draw a character in the center of the canvas
+      const canvas = document.getElementById("myCanvas");
+      const context = canvas.getContext("2d");
+
+      // Step 3: Set the canvas background color to black
+      context.fillStyle = "black";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      const char = "A"; // You can change this to any character
+      const fontColor = "white"; // Change the font color as desired
+      context.fillStyle = fontColor;
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context.font = "16px Arial"; // You can change the font and size
+      context.fillText(char, canvas.width / 2, canvas.height / 2);
+
+      // Step 5: Create a download link
+      const downloadLink = document.getElementById("downloadLink");
+      downloadLink.addEventListener("click", () => {
+        // Step 6: Get canvas region pixel color data in hex format
+        const imageData = context.getImageData(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+        const data = imageData.data;
+
+        let hexData = "";
+        for (let i = 0; i < data.length; i += 4) {
+          const red = data[i].toString(16).padStart(2, "0");
+          const green = data[i + 1].toString(16).padStart(2, "0");
+          const blue = data[i + 2].toString(16).padStart(2, "0");
+          hexData += `#${red}${green}${blue}\n`;
+        }
+
+        // Create a Blob and set it as the download link's href
+        const blob = new Blob([hexData], { type: "text/plain" });
+        downloadLink.href = URL.createObjectURL(blob);
+      });
+    </script>
+  </body>
+</html>
